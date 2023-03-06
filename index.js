@@ -1,5 +1,4 @@
 const pup = require('puppeteer')
-const fs = require('fs')
 const cheerio = require('cheerio')
 
 const url = "https://www.scrapethissite.com/pages/forms/"
@@ -16,6 +15,17 @@ async function scrapeData() {
 
     // fill the form with the search term
     await page.type('#q.form-control', searchFor);
+
+    // wait for the search button to be loaded and click it
+    await Promise.all([
+        page.waitForNavigation(),
+        page.click('.btn.btn-primary')
+    ]);
+
+    // load table to cheerio
+    const $ = cheerio.load(await page.content());
+    const table = $('.table');
+    console.log(table.html());
 
 
     // wait 3 seconds and close the browser
