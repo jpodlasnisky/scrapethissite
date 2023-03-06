@@ -2,6 +2,7 @@
 	"dependencies": {
 		"cheerio": "1.0.0-rc.12",
 		"fs": "0.0.1-security",
-		"puppeteer": "^19.7.2"
+		"puppeteer": "^19.7.2",
+		"request-promise": "^4.2.6"
 	}
 }
