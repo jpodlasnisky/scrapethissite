@@ -12,16 +12,23 @@ async function scrapeData(url, searchFor) {
 
      // Go to the url and wait for the selector to be loaded
     await page.goto(url);
-    await page.waitForSelector('#q.form-control');
 
-    // fill the form with the search term
-    await page.type('#q.form-control', searchFor);
+    try{
+        await page.waitForSelector('#q.form-control');
 
-    // wait for the search button to be loaded and click it
-    await Promise.all([
-        page.waitForNavigation(),
-        page.click('.btn.btn-primary')
-    ]);
+        // fill the form with the search term
+        await page.type('#q.form-control', searchFor);
+
+        // wait for the search button to be loaded and click it
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click('.btn.btn-primary')
+        ]);
+    } catch (error) {
+        console.error('Unable to find the search form - verify url and selectors');
+        browser.close();
+        return false;
+    }
 
     // load table to cheerio
     const $ = cheerio.load(await page.content());
@@ -57,6 +64,8 @@ async function scrapeData(url, searchFor) {
     // wait 3 seconds and close the browser
     await page.waitForTimeout(3000);
     await browser.close();
+
+    return true;
 }
 
 module.exports = {scrapeData};

@@ -9,18 +9,24 @@ async function login(url, email, password){
 
     // Go to the url and wait for the selector to be loaded
     await page.goto(url);
-    await page.waitForSelector('.form');
 
-    // fill the form with the login data
-    await page.type('input[name="user"]', email);
-    await page.type('input[name="pass"]', password);
+    try{
+        // fill the form with the login data
+        await page.waitForSelector('.form');
+        await page.type('input[name="user"]', email);
+        await page.type('input[name="pass"]', password);
 
-    // click the button and navigate to the next page
-    await Promise.all([
-        page.waitForNavigation(),
-        page.click('.btn.btn-primary')
-    ]);
-
+        // click the button and navigate to the next page
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click('.btn.btn-primary')
+        ]);
+    } catch (error) {
+        console.error('Unable to find the login form - verify url and selectors');
+        browser.close();
+        return false;
+    } 
+    
     // load page to cheerio
     const $ = cheerio.load(await page.content());
     const success = $("body").text().includes("Successfully logged in! Nice job :)");

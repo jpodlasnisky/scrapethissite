@@ -12,6 +12,8 @@ async function main() {
     let success = await login.login(urlLogin, email, password);
     console.log("Login status: ", success)
     console.log("Starting Scrap Data...");
+    success = await scrapeData.scrapeData(urlFetchData, searchTerm);
+    console.log("Scrap Data status: ", success)
 }
 
 main();
