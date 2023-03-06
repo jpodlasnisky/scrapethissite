@@ -1,11 +1,7 @@
 const pup = require('puppeteer');
 const cheerio = require('cheerio');
 
-const url = "https://www.scrapethissite.com/pages/advanced/?gotcha=login"
-const email = 'john_snow@test.com'
-const password = 'myWatchHasEnded'
-
-async function login(){
+async function login(url, email, password){
 
     // Open browser and show it then create a new page
     const browser = await pup.launch({headless: false});
@@ -25,8 +21,15 @@ async function login(){
         page.click('.btn.btn-primary')
     ]);
 
+    // load page to cheerio
+    const $ = cheerio.load(await page.content());
+    const success = $("body").text().includes("Successfully logged in! Nice job :)");
+
     // wait 3 seconds then close the browser
     await page.waitForTimeout(3000);
     await browser.close();
+
+    return success;
 }
-login();
+
+module.exports = {login};
